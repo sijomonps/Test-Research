@@ -6,9 +6,20 @@ export type ApiItemResponse<T> = {
   item: T;
 };
 
-export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5002/api"
-).replace(/\/$/, "");
+const isProduction = process.env.NODE_ENV === "production";
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const fallbackBaseUrl = isProduction ? undefined : "http://localhost:5002/api";
+const resolvedBaseUrl = (rawBaseUrl ?? fallbackBaseUrl)?.replace(/\/$/, "");
+
+if (!resolvedBaseUrl) {
+  throw new Error("NEXT_PUBLIC_API_BASE_URL is required in production builds.");
+}
+
+if (typeof window === "undefined") {
+  console.log(`[api] Resolved API base URL: ${resolvedBaseUrl}`);
+}
+
+export const API_BASE_URL = resolvedBaseUrl;
 
 const buildUrl = (path: string) => {
   const safePath = path.startsWith("/") ? path : `/${path}`;
