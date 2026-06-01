@@ -25,6 +25,8 @@ type Submission = {
   file?: SubmissionFile | null;
 };
 
+type UpdateSubmissionStatusResponse = ApiItemResponse<Submission>;
+
 const formatDate = (value?: string) => {
   if (!value) return "N/A";
   const date = new Date(value);
@@ -90,8 +92,11 @@ export default function FacultySubmissionDetailsPage() {
       setSaving(true);
       setError(null);
       setSuccess(null);
-      const response = await apiPatchJson(`/submissions/${submissionId}/status`, { status });
-      setSubmission(response.item as Submission);
+      const response = await apiPatchJson<UpdateSubmissionStatusResponse>(
+        `/submissions/${submissionId}/status`,
+        { status }
+      );
+      setSubmission(response.item);
       setSuccess(`Status updated to ${status}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to update status";

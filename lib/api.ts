@@ -6,6 +6,10 @@ export type ApiItemResponse<T> = {
   item: T;
 };
 
+export type ApiMessageResponse = {
+  message: string;
+};
+
 const isProduction = process.env.NODE_ENV === "production";
 const rawBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 const fallbackBaseUrl = isProduction ? undefined : "http://localhost:5002/api";
@@ -55,10 +59,13 @@ export const apiGet = async <T>(path: string, init?: RequestInit): Promise<T> =>
   return (await response.json()) as T;
 };
 
-export const apiPostJson = async <T>(
+export const apiPostJson = async <
+  TResponse,
+  TBody extends Record<string, unknown> = Record<string, unknown>
+>(
   path: string,
-  body: Record<string, unknown>
-): Promise<T> => {
+  body: TBody
+): Promise<TResponse> => {
   const response = await fetch(buildUrl(path), {
     method: "POST",
     headers: {
@@ -73,14 +80,17 @@ export const apiPostJson = async <T>(
     throw new Error(message || "Request failed");
   }
 
-  return (await response.json()) as T;
+  return (await response.json()) as TResponse;
 };
 
-export const apiPatchJson = async <T>(
+export const apiPatchJson = async <
+  TResponse,
+  TBody extends Record<string, unknown> = Record<string, unknown>
+>(
   path: string,
-  body: Record<string, unknown>,
+  body: TBody,
   init?: RequestInit
-): Promise<T> => {
+): Promise<TResponse> => {
   const response = await fetch(buildUrl(path), {
     ...init,
     method: "PATCH",
@@ -97,7 +107,7 @@ export const apiPatchJson = async <T>(
     throw new Error(message || "Request failed");
   }
 
-  return (await response.json()) as T;
+  return (await response.json()) as TResponse;
 };
 
 export const apiPostForm = async <T>(path: string, body: FormData): Promise<T> => {
