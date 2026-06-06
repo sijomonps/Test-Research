@@ -17,14 +17,9 @@ const getAuthHeaders = (): Record<string, string> => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-const isProduction = process.env.NODE_ENV === "production";
 const rawBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-const fallbackBaseUrl = isProduction ? undefined : "http://localhost:5002/api";
-const resolvedBaseUrl = (rawBaseUrl ?? fallbackBaseUrl)?.replace(/\/$/, "");
-
-if (!resolvedBaseUrl) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL is required in production builds.");
-}
+const fallbackBaseUrl = "http://localhost:5000/api";
+const resolvedBaseUrl = (rawBaseUrl || fallbackBaseUrl).replace(/\/$/, "");
 
 if (typeof window === "undefined") {
   console.log(`[api] Resolved API base URL: ${resolvedBaseUrl}`);
