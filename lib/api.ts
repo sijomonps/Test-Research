@@ -362,6 +362,16 @@ const handleMockRequest = async (
     return { item };
   }
 
+  // Route: PATCH /users/:id
+  if (method === "PATCH" && pathname.startsWith("/users/")) {
+    const id = pathname.substring(7);
+    const userIdx = db.users.findIndex(u => u._id === id);
+    if (userIdx === -1) throw new Error("User not found");
+    db.users[userIdx] = { ...db.users[userIdx], ...body };
+    saveDB(db);
+    return { item: db.users[userIdx] };
+  }
+
   // Route: GET /departments
   if (method === "GET" && pathname === "/departments") {
     return { items: db.departments };

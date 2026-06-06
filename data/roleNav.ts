@@ -18,7 +18,6 @@ export const scholarNav: NavItem[] = [
   { label: "My Portfolio", icon: Award, href: "/scholar/portfolio" },
   { label: "Leave Applications", icon: Calendar, href: "/scholar/leaves" },
   { label: "My Approvals", icon: ClipboardCheck, href: "/scholar/approvals" },
-  { label: "Profile", icon: User, href: "/scholar/profile" },
 ];
 
 export const facultyNav: NavItem[] = [
